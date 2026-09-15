@@ -10,3 +10,4 @@ if (-not $UserPrincipalName) {
     Write-Error "UserPrincipalName is required"
     exit 1
 }
+# TODO: add real license check logic
