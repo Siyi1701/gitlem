@@ -5,3 +5,8 @@ param(
 
 Write-Output "Checking license for: $UserPrincipalName"
 # 实际逻辑后续补充
+
+if (-not $UserPrincipalName) {
+    Write-Error "UserPrincipalName is required"
+    exit 1
+}
