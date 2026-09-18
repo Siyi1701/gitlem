@@ -1,8 +1,3 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$UserPrincipalName
-)
-
 function Test-LicenseAssigned {
     param([string]$Upn)
 
@@ -17,12 +12,20 @@ function Test-LicenseAssigned {
     return $true
 }
 
-try {
-    $result = Test-LicenseAssigned -Upn $UserPrincipalName
-    Write-Output "License check passed for: $UserPrincipalName"
-    exit 0
-}
-catch {
-    Write-Error $_.Exception.Message
-    exit 1
+# 只有直接运行时才执行入口逻辑
+if ($MyInvocation.InvocationName -ne '.') {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$UserPrincipalName
+    )
+
+    try {
+        Test-LicenseAssigned -Upn $UserPrincipalName | Out-Null
+        Write-Output "License check passed for: $UserPrincipalName"
+        exit 0
+    }
+    catch {
+        Write-Error $_.Exception.Message
+        exit 1
+    }
 }
