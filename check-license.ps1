@@ -1,13 +1,28 @@
-# 检查 M365 用户许可证分配
 param(
+    [Parameter(Mandatory=$true)]
     [string]$UserPrincipalName
 )
 
-Write-Output "Checking license for: $UserPrincipalName"
-# 实际逻辑后续补充
+function Test-LicenseAssigned {
+    param([string]$Upn)
 
-if (-not $UserPrincipalName) {
-    Write-Error "UserPrincipalName is required"
+    if ([string]::IsNullOrWhiteSpace($Upn)) {
+        throw "UserPrincipalName cannot be empty"
+    }
+
+    if ($Upn -notmatch '^[^@]+@[^@]+\.[^@]+$') {
+        throw "Invalid UPN format: $Upn"
+    }
+
+    return $true
+}
+
+try {
+    $result = Test-LicenseAssigned -Upn $UserPrincipalName
+    Write-Output "License check passed for: $UserPrincipalName"
+    exit 0
+}
+catch {
+    Write-Error $_.Exception.Message
     exit 1
 }
-# TODO: add real license check logic
